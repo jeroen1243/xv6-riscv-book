@@ -12,3 +12,5 @@ xv6-riscv-src
 *.bbl
 *.blg
 *.out
+book.fdb_latexmk
+book.fls
