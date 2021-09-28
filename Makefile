@@ -16,7 +16,7 @@ TEX=\
 	$(T)/sum.tex\
 
 all: book.pdf
-.PHONY: all src clean
+.PHONY: all src deps clean
 
 $(T)/%.tex: %.tex | src
 	mkdir -p latex.out
@@ -24,11 +24,14 @@ $(T)/%.tex: %.tex | src
 
 src:
 	if [ ! -d $(SRC) ]; then \
-		git clone git@github.com:besturingssystemen/xv6-riscv.git $(SRC) ; \
+		git clone https://github.com/besturingssystemen/xv6-riscv.git $(SRC) ; \
 	else \
 		git -C $(SRC) pull ; \
 	fi; \
 	true
+
+deps: src book.tex $(TEX)
+	echo "dependencies handled!"
 
 book.pdf: src book.tex $(TEX)
 	pdflatex book.tex
