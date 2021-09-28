@@ -6,13 +6,18 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
-      - name: make
-        uses: dante-ev/latex-action@latest
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
         with:
-          extra_system_packages: make
-          entrypoint: "make book.pdf"
+          extra_system_packages: "make"
+          precompile: "make book.pdf"
+          root_file: book.tex
       - name: Upload PDF
         uses: actions/upload-artifact@v2
         with:
           name: PDF
           path: book.pdf
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: book.pdf
