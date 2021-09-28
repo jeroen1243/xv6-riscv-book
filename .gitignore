@@ -14,3 +14,4 @@ xv6-riscv-src
 *.out
 book.fdb_latexmk
 book.fls
+*.swp
