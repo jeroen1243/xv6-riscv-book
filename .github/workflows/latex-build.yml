@@ -10,7 +10,7 @@ jobs:
         uses: dante-ev/latex-action@latest
         with:
           extra_system_packages: make
-          entrypoint: make
+          entrypoint: "make book.pdf"
       - name: Upload PDF
         uses: actions/upload-artifact@v2
         with:
