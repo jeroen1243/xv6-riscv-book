@@ -31,7 +31,7 @@ Dennis Ritchie's Unix operating system~\cite{unix}, as well as mimicking Unix's
 internal design.  Unix provides a
 narrow interface whose mechanisms combine well, offering a surprising
 degree of generality.  This interface has been so successful that
-modern operating systems—BSD, Linux, Mac OS X, Solaris, and even, to a
+modern operating systems—BSD, Linux, macOS, Solaris, and even, to a
 lesser extent, Microsoft Windows—have Unix-like interfaces.
 Understanding xv6 is a good start toward understanding any of these
 systems and many others.
@@ -219,7 +219,7 @@ In the example, the output lines
 parent: child=1234
 child: exiting
 \end{lstlisting}
-might come out in either order, depending on whether the
+might come out in either order (or even intermixed), depending on whether the
 parent or child gets to its
 \indexcode{printf}
 call first.
@@ -250,7 +250,7 @@ replaces the calling process's memory with a new memory
 image loaded from a file stored in the file system.
 The file must have a particular format, which specifies which part of
 the file holds instructions, which part is data, at which instruction
-to start, etc. xv6
+to start, etc. Xv6
 uses the ELF format, which Chapter~\ref{CH:MEM} discusses in
 more detail.
 When
@@ -773,12 +773,11 @@ example, \lstinline{echo hi | wc} won't produce output, because when
 exits and never calls fork to run the right end of the pipe.  This
 incorrect behavior could be fixed by not calling \lstinline{exit} in
 \lstinline{runcmd} for interior processes, but this fix complicates
-the code: now \lstinline{runcmd} needs to know if it a interior
+the code: now \lstinline{runcmd} needs to know if it's in an interior
 process or not.  Complications also arise when not forking for
 \lstinline{runcmd(p->right)}.  For example, with just that
 modification, \lstinline{sleep 10 | echo hi} will immediately print
-``hi'' and ask for the input from the user, instead of asking for
-input after 10 seconds; this happens because \lstinline{echo} runs
+``hi' and a new prompt, instead of after 10 seconds; this happens because \lstinline{echo} runs
 immediately and exits, not waiting for \lstinline{sleep} to finish.
 Since the goal of the \lstinline{sh.c} is to be as simple as possible,
 it doesn't try to avoid creating interior processes.
@@ -1025,7 +1024,7 @@ The idea sparked a culture of ``software tools'' that was
 responsible for much of Unix's power and popularity,
 and the shell was the first so-called ``scripting language.''
 The Unix system call interface persists today in systems like
-BSD, Linux, and Mac OS X.
+BSD, Linux, and macOS.
 
 The Unix system call interface has been standardized through the Portable
 Operating System Interface (POSIX) standard.

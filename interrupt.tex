@@ -38,7 +38,7 @@ on any waiting next operation.
 
 \section{Code: Console input}
 
-The console driver \fileref{console.c}
+The console driver \fileref{kernel/console.c}
 is a simple illustration of driver structure. The
 console driver accepts characters typed by a human, via the \indextext{UART}
 serial-port hardware attached to the RISC-V. The console driver accumulates a
@@ -169,8 +169,9 @@ UART) interrupt while that CPU is already executing inside
 {\tt consoleread};
 and the hardware might deliver a console interrupt on
 a different CPU while {\tt consoleread} is executing.
-Chapter~\ref{CH:LOCK} explores how locks help in
-these scenarios.
+These dangers may result in race conditions or deadlocks.
+Chapter~\ref{CH:LOCK} explores these problems and how locks can
+address them.
 
 Another way in which concurrency requires care in drivers is that one
 process may be waiting for input from a device, but the interrupt
@@ -243,9 +244,10 @@ the CPU fairly among kernel threads is useful if kernel threads
 sometimes spend a lot of time computing, without returning to user
 space. However, the need for kernel code to be mindful that it might
 be suspended (due to a timer interrupt) and later resume on a
-different CPU is the source of some complexity in xv6. The kernel
-could be made somewhat simpler if device and timer interrupts only
-occurred while executing user code.
+different CPU is the source of some complexity in xv6
+(see~Section~\ref{s:lockinter}). The kernel could be made somewhat
+simpler if device and timer interrupts only occurred while executing
+user code.
 
 Supporting all the devices on a typical computer in its full glory is
 much work, because there are many devices, the devices have many
@@ -282,6 +284,25 @@ double copy can significantly reduce performance for devices that
 generate or consume data very quickly. Some operating systems are able
 to directly move data between user-space buffers and device hardware,
 often with DMA.
+
+As mentioned in Chapter~\ref{CH:UNIX}, the console appears to
+applications as a regular file, and applications read input and write
+output using the \lstinline{read} and \lstinline{write} system calls.
+Applications may want to control aspects of a device that cannot be
+expressed through the standard file system calls (e.g.,
+enabling/disabling line buffering in the console driver).  Unix
+operating systems support the \lstinline{ioctl} system call for such
+cases.
+
+Some usages of computers require that the system must respond in a
+bounded time.  For example, in safety-critical systems missing a
+deadline can lead to disasters.  Xv6 is not suitable for hard
+real-time settings. Operating systems for hard real-time tend to be
+libraries that link with the application in a way that allows for an
+analysis to determine the worst-case response time.  Xv6 is also not
+suitable for soft real-time applications, when missing a deadline
+occasionally is acceptable, because xv6's scheduler is too simplistic and it has
+kernel code path where interrupts are disabled for a long time.
 
 \section{Exercises}
 
